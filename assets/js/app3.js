@@ -33,16 +33,17 @@ angular.module('app.pages3', [])
 
 
 
-            let question_b_answers = [
+            let b_ans = [
                 "Yes",
                 "No",
                 "Confirm Attendance (of other members)",
                 "Yes"
             ];
 
-            let question_b_uncertainties = "I'm not sure";
+            let b_unc = "I'm not sure";
 
-            let question_b_not_included = "The justification did not say";
+            let b_nic = "The justification did not say";
+            
             let processCount = 0;
 
             let fc = "";
@@ -50,6 +51,8 @@ angular.module('app.pages3', [])
 
             let may_data = [];
             let june_data = [];
+            
+            vm.comments = {"Comment 1", "Comment 2", "cOMMENT 3"};
 
             vm.init =  function () {
                 firebase.initializeApp({
@@ -95,6 +98,7 @@ angular.module('app.pages3', [])
             let ad = {};
             let ae = {};
             let af = {};
+            let b = { correct: 0, incorrect: 0, unsure: 0, not_available: 0};
             
             let uncertain = [
                     "5ea99d673593b80b60cba65f",
@@ -163,8 +167,52 @@ angular.module('app.pages3', [])
                         af[entry.responses.a.f] = 1
                     }
                 }
+                // store b
+                if (entry.responses.b) {
+                    
+                    // a, b, c of interest
+                    if (entry.responses.b.a){
+                        if (entry.responses.b.a === b_ans[0]) {
+                            b.correct = b.correct + 1;
+                        } else if (entry.responses.b.a === b_unc) {
+                            b.unsure = b.unseure + 1;
+                        } else if (entry.responses.b.a === b_nic) {
+                         b.not_available = b.not_available + 1;   
+                       } else {
+                           b.incorrect = b.incorrect + 1;
+                       }
+                    }
+                    
+                    if (entry.responses.b.b){
+                        if (entry.responses.b.b === b_ans[1]) {
+                            b.correct = b.correct + 1;
+                        } else if (entry.responses.b.b === b_unc) {
+                            b.unsure = b.unseure + 1;
+                        } else if (entry.responses.b.b === b_nic) {
+                         b.not_available = b.not_available + 1;   
+                       } else {
+                           b.incorrect = b.incorrect + 1;
+                       }
+                    }
+                    
+                    if (entry.responses.b.c){
+                        if (entry.responses.b.c === b_ans[2]) {
+                            b.correct = b.correct + 1;
+                        } else if (entry.responses.b.c === b_unc) {
+                            b.unsure = b.unseure + 1;
+                        } else if (entry.responses.b.c === b_nic) {
+                         b.not_available = b.not_available + 1;   
+                       } else {
+                           b.incorrect = b.incorrect + 1;
+                       }
+                    }
+                    
+                    
+                      
+                }
 
 
+             
 
 
             }
@@ -207,6 +255,7 @@ angular.module('app.pages3', [])
                 let adData = getKVPairs(ad);
                 let aeData = getKVPairs(ae);
                 let afData = getKVPairs(af);
+                let bData =  getKVPairs(b);
 
 
 
@@ -382,7 +431,30 @@ angular.module('app.pages3', [])
                     }
                 );
 
+let bChart = new Chart(
+                    document.getElementById('b'),
+                    {
+                        type: 'polarArea',
+                        data: {
+                            labels: bData.keys,
+                            datasets: [{
+                                label: '',
+                                backgroundColor: [
+                                    "#0a3d62",
+                                    "#38ada9",
+                                    "#b71540",
+                                    "#fad390",
+                                    "#e55039",
 
+
+                                ],
+
+                                data: bData.values,
+                            }]
+                        },
+                        options: {}
+                    }
+                );
 
 
 
