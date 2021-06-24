@@ -16,12 +16,12 @@ angular.module('app.pages3', [])
                 "Occupation"
             ];
             let a = {
-               a:  "The visualisation helps me understand how the tool works",
-               b: "The visualisation of how the Agent works is satisfying",
-               c:  "The visualisation is sufficiently detailed",
-               d: "The visualisation seems complete",
-               e:  "The visualisation of how the tool works tells me how to use it",
-               f: "The tool was helpful in allowing me to quickly understanding the reasons for the outcome"
+                a:  "The visualisation helps me understand how the tool works",
+                b: "The visualisation of how the Agent works is satisfying",
+                c:  "The visualisation is sufficiently detailed",
+                d: "The visualisation seems complete",
+                e:  "The visualisation of how the tool works tells me how to use it",
+                f: "The tool was helpful in allowing me to quickly understanding the reasons for the outcome"
             };
 
             let bz = {
@@ -35,15 +35,14 @@ angular.module('app.pages3', [])
 
             let b_ans = [
                 "Yes",
-                "No",
                 "Confirm Attendance (of other members)",
-                "Yes"
+                "10am"
             ];
 
             let b_unc = "I'm not sure";
 
             let b_nic = "The justification did not say";
-            
+
             let processCount = 0;
 
             let fc = "";
@@ -51,8 +50,8 @@ angular.module('app.pages3', [])
 
             let may_data = [];
             let june_data = [];
-            
-            vm.comments = ["Comment 1", "Comment 2", "cOMMENT 3"];
+
+            vm.comments = [];
 
             vm.init =  function () {
                 firebase.initializeApp({
@@ -75,7 +74,7 @@ angular.module('app.pages3', [])
             function fetchData() {
                 fc.get().then(querySnapshot => {
                     querySnapshot.forEach((doc) => {
-                       // processEntry(doc.data());
+                        // processEntry(doc.data());
                     });
                     processCompleted();
                 });
@@ -99,7 +98,7 @@ angular.module('app.pages3', [])
             let ae = {};
             let af = {};
             let b = { correct: 0, incorrect: 0, unsure: 0, not_available: 0};
-            
+
             /*let uncertain = [
                     "5ea99d673593b80b60cba65f",
                     "596cc0a327a2f90001100486",
@@ -108,7 +107,7 @@ angular.module('app.pages3', [])
                 ];*/
 
             function processEntry (entry) {
-              
+
 
                 if (entry === undefined) { return; }
                 if (entry.demographics === undefined) { return; }
@@ -120,12 +119,12 @@ angular.module('app.pages3', [])
                         gender_distribution[entry.demographics.gender] = 1;
                     }
                 }
-                
+
                 /*if (entry.demographics.prolific) {
                      console.log(entry);
                     uncertain.forEach(ex => {
                        if (entry.demographics.prolific == ex) {
-                          console.log("found: " + ex);   
+                          console.log("found: " + ex);
                        }
                     });
                 }*/
@@ -169,57 +168,63 @@ angular.module('app.pages3', [])
                 }
                 // store b
                 if (entry.responses.b) {
-                    
+
                     // a, b, c of interest
                     if (entry.responses.b.a){
                         if (entry.responses.b.a === b_ans[0]) {
                             b.correct = b.correct + 1;
                         } else if (entry.responses.b.a === b_unc) {
-                            b.unsure = b.unseure + 1;
+                            b.unsure = b.unsure + 1;
                         } else if (entry.responses.b.a === b_nic) {
-                         b.not_available = b.not_available + 1;   
-                       } else {
-                           b.incorrect = b.incorrect + 1;
-                           console.log("saw: " +  entry.response.b.a + " instead of " +  b_ans[0]);
-                       }
+                            b.not_available = b.not_available + 1;
+                        } else {
+                            b.incorrect = b.incorrect + 1;
+                            //console.log("saw: " +  entry.responses.b.a + " instead of " +  b_ans[0]);
+                        }
                     }
-                    
+
                     if (entry.responses.b.b){
                         if (entry.responses.b.b === b_ans[1]) {
                             b.correct = b.correct + 1;
                         } else if (entry.responses.b.b === b_unc) {
-                            b.unsure = b.unseure + 1;
+                            b.unsure = b.unsure + 1;
                         } else if (entry.responses.b.b === b_nic) {
-                         b.not_available = b.not_available + 1;   
-                       } else {
-                           b.incorrect = b.incorrect + 1;
-                           console.log("saw: " +  entry.response.b.b + " instead of " +  b_ans[1]);
-                       }
+                            b.not_available = b.not_available + 1;
+                        } else {
+                            b.incorrect = b.incorrect + 1;
+                             //console.log("saw: " +  entry.responses.b.b + " instead of " +  b_ans[1]);
+                        }
                     }
-                    
+
                     if (entry.responses.b.c){
                         if (entry.responses.b.c === b_ans[2]) {
                             b.correct = b.correct + 1;
                         } else if (entry.responses.b.c === b_unc) {
-                            b.unsure = b.unseure + 1;
+                            b.unsure = b.unsure + 1;
                         } else if (entry.responses.b.c === b_nic) {
-                         b.not_available = b.not_available + 1;   
-                       } else {
-                           b.incorrect = b.incorrect + 1;
-                           console.log("saw: " +  entry.response.b.c + " instead of " +  b_ans[2]);
-                       }
+                            b.not_available = b.not_available + 1;
+                        } else {
+                            b.incorrect = b.incorrect + 1;
+                            //console.log("saw: " +  entry.responses.b.c + " instead of " +  b_ans[2]);
+                        }
                     }
-                    
-                    if (entry.response.b.g){
-                      if (entry.response.b.g.trim().length > 0) {
-                       vm.comments.append(entry.response.b.g);   
-                      }
+
+                    if (entry.responses.b.g){
+                        if (entry.responses.b.g.trim().length > 0) {
+                            let xpps = entry.responses.b.g.replace("If it wasmeant to be a faster way to understand the re scheduling I think it failed", "");
+                            xpps = xpps.replace( "This one requires a lot o attention and would prove disastrous to someone who is working from home where there are no co-workers to remind you of an upcoming meeting in case you forget. Having employees understand and be aware of what is going on through the course of the day so they can prepare for meetings in time, and not just sit there like part of the furniture.", "")
+                            vm.comments.push(xpps);
+                            //console.log("added");
+                        } else {
+                            console.log("NOTE: " +  entry.responses.b.g);
+                        }
+                        console.log(vm.comments);
                     }
-                      
+
                 }
 
 
-             
+
 
 
             }
@@ -229,6 +234,7 @@ angular.module('app.pages3', [])
                 processCount = processCount + 1;
                 if (processCount >= 2) {
                     showGraph();
+                    $scope.$apply();
                 }
             }
 
@@ -250,8 +256,8 @@ angular.module('app.pages3', [])
                 }
             }
 
-            
-            
+
+
 
             function showGraph () {
 
@@ -264,9 +270,9 @@ angular.module('app.pages3', [])
                 let afData = getKVPairs(af);
                 let bData =  getKVPairs(b);
 
+                console.log(bData);
 
-
-               var genderChart = new Chart(
+                var genderChart = new Chart(
                     document.getElementById('genderChart'),
                     {
                         type: 'polarArea',
@@ -438,7 +444,7 @@ angular.module('app.pages3', [])
                     }
                 );
 
-let bChart = new Chart(
+                let bChart = new Chart(
                     document.getElementById('b'),
                     {
                         type: 'polarArea',
