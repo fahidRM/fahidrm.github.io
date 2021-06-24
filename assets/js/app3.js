@@ -24,7 +24,7 @@ angular.module('app.pages3', [])
                f: "The tool was helpful in allowing me to quickly understanding the reasons for the outcome"
             };
 
-            let b = {
+            let bz = {
                 a: "Was it necessary for the calendar to reschedule the event?",
                 b: "What was the first action performed by the calendar?",
                 c: "Was the agent equipped to reschedule the event if the first proposed time was not suitable?",
