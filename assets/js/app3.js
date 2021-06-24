@@ -100,12 +100,12 @@ angular.module('app.pages3', [])
             let af = {};
             let b = { correct: 0, incorrect: 0, unsure: 0, not_available: 0};
             
-            let uncertain = [
+            /*let uncertain = [
                     "5ea99d673593b80b60cba65f",
                     "596cc0a327a2f90001100486",
                     "5c018eb6067bbf00019ba43d",
                     "60d0438da6b56924080fc16d"
-                ];
+                ];*/
 
             function processEntry (entry) {
               
@@ -121,14 +121,14 @@ angular.module('app.pages3', [])
                     }
                 }
                 
-                if (entry.demographics.prolific) {
+                /*if (entry.demographics.prolific) {
                      console.log(entry);
                     uncertain.forEach(ex => {
                        if (entry.demographics.prolific == ex) {
                           console.log("found: " + ex);   
                        }
                     });
-                }
+                }*/
 
                 if (entry.responses.a.a) {
                     if (aa.hasOwnProperty(entry.responses.a.a)) {
@@ -180,6 +180,7 @@ angular.module('app.pages3', [])
                          b.not_available = b.not_available + 1;   
                        } else {
                            b.incorrect = b.incorrect + 1;
+                           console.log("saw: " +  entry.response.b.a + " instead of " +  b_ans[0]);
                        }
                     }
                     
@@ -192,6 +193,7 @@ angular.module('app.pages3', [])
                          b.not_available = b.not_available + 1;   
                        } else {
                            b.incorrect = b.incorrect + 1;
+                           console.log("saw: " +  entry.response.b.b + " instead of " +  b_ans[1]);
                        }
                     }
                     
@@ -204,10 +206,15 @@ angular.module('app.pages3', [])
                          b.not_available = b.not_available + 1;   
                        } else {
                            b.incorrect = b.incorrect + 1;
+                           console.log("saw: " +  entry.response.b.c + " instead of " +  b_ans[2]);
                        }
                     }
                     
-                    
+                    if (entry.response.b.g){
+                      if (entry.response.b.g.trim().length > 0) {
+                       vm.comments.append(entry.response.b.g);   
+                      }
+                    }
                       
                 }
 
