@@ -104,7 +104,7 @@ angular.module('app.pages3', [])
                 ];
 
             function processEntry (entry) {
-               // console.log(entry);
+              
 
                 if (entry === undefined) { return; }
                 if (entry.demographics === undefined) { return; }
@@ -117,9 +117,10 @@ angular.module('app.pages3', [])
                     }
                 }
                 
-                if (entry.demographics.prolific_id) {
+                if (entry.demographics.prolific) {
+                     console.log(entry);
                     uncertain.forEach(ex => {
-                       if (entry.demographics.prolific_id == ex) {
+                       if (entry.demographics.prolific == ex) {
                           console.log("found: " + ex);   
                        }
                     });
