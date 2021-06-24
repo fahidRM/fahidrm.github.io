@@ -52,7 +52,7 @@ angular.module('app.pages3', [])
             let may_data = [];
             let june_data = [];
             
-            vm.comments = {"Comment 1", "Comment 2", "cOMMENT 3"};
+            vm.comments = ["Comment 1", "Comment 2", "cOMMENT 3"];
 
             vm.init =  function () {
                 firebase.initializeApp({
