@@ -95,6 +95,13 @@ angular.module('app.pages3', [])
             let ad = {};
             let ae = {};
             let af = {};
+            
+            let uncertain = [
+                    "5ea99d673593b80b60cba65f",
+                    "596cc0a327a2f90001100486",
+                    "5c018eb6067bbf00019ba43d",
+                    "60d0438da6b56924080fc16d"
+                ];
 
             function processEntry (entry) {
                // console.log(entry);
@@ -108,6 +115,14 @@ angular.module('app.pages3', [])
                     } else {
                         gender_distribution[entry.demographics.gender] = 1;
                     }
+                }
+                
+                if (entry.demographics.prolific_id) {
+                    uncertain.forEach(ex => {
+                       if (entry.demographics.prolific_id == ex) {
+                          console.log("found: " + ex);   
+                       }
+                    });
                 }
 
                 if (entry.responses.a.a) {
@@ -179,6 +194,8 @@ angular.module('app.pages3', [])
                 }
             }
 
+            
+            
 
             function showGraph () {
 
