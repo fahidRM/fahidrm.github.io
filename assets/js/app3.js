@@ -216,9 +216,9 @@ angular.module('app.pages3', [])
                             vm.comments.push(xpps);
                             //console.log("added");
                         } else {
-                            console.log("NOTE: " +  entry.responses.b.g);
+                           // console.log("NOTE: " +  entry.responses.b.g);
                         }
-                        console.log(vm.comments);
+                        //console.log(vm.comments);
                     }
 
                 }
