@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Study </title>
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+
+</head>
+
+<body style="height: 100vh !important" ng-app="study-platform" ng-controller="NonExpertStudy as dashboard" ng-init="dashboard.init()">
+
+    
+
+    <!-- the main content-->
+    <div class="contentbar" ng-hide="dashboard.page.index == 4">
+
+        <!-- Introduction page -->
+        <div class="row bounded" ng-show="dashboard.page.index == 0">
+            <div class="page">
+                <h4 class="">{{dashboard.page.title}}</h4>
+                <span>{{dashboard.page.closing_remarks}}</span>
+                <br><br>
+                <span>{{dashboard.page.note_a}}</span><br>
+                <span>{{dashboard.page.note_b}}:</span><br>
+                <br>
+                <ul>
+                    <li ng-repeat="entry in dashboard.page.note_b_list">{{entry}}</li>
+                </ul>
+                <br>
+                <br>
+                <span class="text-danger">{{dashboard.page.note_c}}</span><br>
+            </div>
+        </div>
+
+
+        <!-- Demographics -->
+        <div class="row bounded" ng-show="dashboard.page.index == 1">
+
+            <div class="page">
+                <h4 class="">{{dashboard.page.title}}</h4>
+                <br>
+                <span class="toned-down">{{dashboard.page.subtitle}}</span><br>
+                <span class="toned-down">{{dashboard.page.subtitle_b}}</span>
+                <br><br>
+                <table class="uncentred">
+                    <tbody>
+                        <tr class="spaced_rows">
+                            <td>Gender: <span class="red">*</span></td>
+                            <td>
+                                <select 
+                                    ng-model="dashboard.response.demographics.gender"
+                                    ng-options="option for option in dashboard.GENDER_OPTIONS">
+                                  </select>
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td>Educational Qualification: <span class="red">*</span></td>
+                            <td>
+                                <select 
+                                    ng-model="dashbaord.response.demographics.education"
+                                    ng-options="option for option in dashboard.EDUCATION_OPTIONS">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td>Age Range: <span class="red">*</span></td>
+                            <td>
+                                <select 
+                                    ng-model="dashboard.response.demographics.age"
+                                    ng-options="option for option in dashboard.AGE_RANGE_OPTIONS">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td>Occupation: <span class="red">*</span></td>
+                            <td>
+                                <input type="text" ng-model="dashboard.response.demographics.occupation">
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td>Do you make use of visualisations daily: <span class="red">*</span></td>
+                            <td>
+                                <select 
+                                    ng-model="dashboard.response.misc.use_of_visualisation"
+                                    ng-options="option for option in dashboard.USE_OF_VISULAISATION_OPTIONS">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td><b>PROLIFIC ID</b>: <span class="red">*</span> </td>
+                            <td>
+                                <input type="text" ng-model="dashboard.response.demographics.prolific_id">
+                            </td>
+                        </tr>
+                        <tr class="spaced_rows">
+                            <td>What do you think transparency in AI is? <span class="red">*</span></td>
+                            <td>
+                                <textarea rows="5" ng-model="dashbaord.response.misc.view_on_transparency"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                <span class="text-danger">{{dashboard.page.note_c}}</span><br>
+            </div>
+
+
+   
+            
+            
+        </div>
+
+        <!-- scenario page -->
+        <div class="row bounded" ng-show="dashboard.page.index == 2">
+            <div class="page_b">
+                <h4>{{dashboard.page.title}}</h4>
+                <span class="text-info">{{dashboard.page.subtitle}}</span>
+                <br>
+                <span>{{dashboard.page.intro}}</span><br>
+                <span>{{dashboard.page.intro_b}}</span><br><br>
+                <span>{{dashboard.page.list_intro}}</span><br>
+                <table>
+                    <tbody>
+                        <tr ng-repeat="entry in dashboard.page.list">
+                            <td>{{entry.time}}</td>
+                            <td>{{entry.note}}</td>
+                        </tr>
+                    </tbody> 
+                </table>
+
+                <br>
+                <span>{{dashboard.page.list_two_intro}}</span><br>
+                    <table>
+                        <tbody>
+                            <tr ng-repeat="entry in dashboard.page.list_two">
+                                <td>{{entry.time}}</td>
+                                <td>{{entry.note}}</td>
+                            </tr>
+                        </tbody> 
+                    </table>
+                <br><br>
+                <span>{{dashboard.page.comment}}</span><br>
+                <span>{{dashboard.page.comment_2}}</span><br>
+
+
+            </div>
+        </div>
+
+        <!-- instructions & help page -->
+
+        
+
+        <!-- questionnaire set 1 -->
+        <div class="row bounded" ng-show="dashboard.page.index == 5">
+            <div class="page_c">
+                <h4 class="">{{dashboard.page.title}}</h4>
+                <span class="text-danger">{{dashboard.page.subtitle}}</span>
+                <br><br>
+                <span>{{dashboard.page.notes}}</span><br>
+                <br>
+                <textarea cols="65" rows="9" ng-model="dashboard.response.misc.think_aloud"></textarea>
+                
+            </div>
+        </div>
+
+        <!-- questionnaire set 2 -->
+        <div class="row bounded" ng-show="dashboard.page.index == 6">
+            <div class="page_d">
+                <h4>{{dashboard.page.title}}</h4>
+                <br>
+                <span class="toned-down">{{dashboard.page.subtitle}}</span>
+                <br>
+                <table>
+                    <tbody>
+                        <tr ng-repeat="question in dashboard.LIKERT.PSSUQ">
+                            <td colspan="3" >{{question}}</td>
+                            <td colspan="1">
+                                <select 
+                                    ng-model="dashboard.response.pssuq[$index]"
+                                    ng-options="option for option in dashboard.LIKERT.OPTIONS">
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- questionnaire set 3 -->
+
+        <div class="row bounded" ng-show="dashboard.page.index == 7">
+            <div class="page">
+                <h4>{{dashboard.page.title}}</h4>
+                <br>
+                <span class="toned-down">{{dashboard.page.subtitle}}</span>
+                <br>
+                <table>
+                    <tbody>
+                        <tr ng-repeat="question in dashboard.LIKERT.SUS">
+                            <td colspan="3">{{question}}</td>
+                            <td colspan="1">
+                                <select 
+                                    ng-model="dashboard.response.sus[$index]"
+                                    ng-options="option for option in dashboard.LIKERT.OPTIONS">
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- closing remarks -->
+        <div class="row bounded" ng-show="dashboard.page.index == 8">
+            <div class="page">
+                <h4 class="">{{dashboard.page.title}}</h4>
+                <br><small><b>PROLIFIC COMPLETION CODE:</b></small><br>
+                
+                <h2>{{dashboard.page.completion_code}}</h2><br>
+                <br><br><br>
+                <span>{{dashboard.page.note_b}}</span>
+                
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div ng-hide="dashboard.page.index == 4" class="headerbar">
+        <!-- header: shows on certain pages -->
+
+        <div class="row">
+            <div class="col-sm col-sm-3 lgap">
+                <button class="btn btn-danger" 
+                        ng-show="dashboard.page.hasPrevPage"
+                        ng-click="dashboard.gotoPrevPage()">Back</button>
+            </div>
+            <div class="col-sm col-sm-6 ">
+                
+            </div>
+            <div class=" col-sm col-xs-3 rgap">
+                <button class="btn btn-success rfloat" 
+                        ng-click="dashboard.gotoNextPage()">Next</button>
+                
+                <button class="btn btn-succes rfloat" 
+                        ng-show="dashbaord.page.index === (dashbaord.pc -1)"
+                        ng-click="dashboard.submit()">Submit</button>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div class="contentbar_b" ng-show="dashboard.page.index == 4">
+        <!-- task page -->
+        <div class="row bounded" >
+                <div class="col-md col-md-3 left_bordered">
+                    <nav class="nav-group ">
+                        <ul class="list-group cap-at-200">
+                            <li class="searchbar">
+                                <input class="form-control" type="text"
+                                ng-model="dashboard.searchString"
+                                ng-change="dashboard.searchKnowledgeBase()"
+                                placeholder="search">
+                            </li>
+                            <li class="list_item"
+                                ng-repeat="belief in dashboard.filteredKnowledgeBase">
+                                <div class="media-body">
+                                    <strong>{{belief.value}}</strong>
+                                    <p><small>source: {{belief.source}}</small></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md col-md-8">
+                    <div class="pane fit" id="view_region">
+                        <div id="visualisation_board" class="fit-and-scroll"></div>
+                    </div>
+                </div>
+        </div>
+
+        
+    </div>
+
+    <div ng-show="dashboard.page.index == 4" class="headerbar_b">
+        <!-- header: shows on certain pages -->
+        <div class = "row">
+            <div class="col-sm col-sm-2"></div>
+            <div class="col-sm col-sm-8">
+                <table ng-show="dashboard.page.has_options">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span>{{dashboard.TASKS[dashboard.selectedQuestion].question}}</span>
+                            </td>
+                            <td> 
+                                <select 
+                                    ng-model="dashboard.response.task[dashboard.selectedQuestion]"
+                                    ng-options="option for option in dashboard.TASKS[dashboard.selectedQuestion].options">
+                                  </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm col-sm-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm col-sm-3 lgap">
+                <button class="btn btn-danger" 
+                        ng-show="dashboard.page.hasPrevPage"
+                        ng-click="dashboard.gotoPrevQuestion()">Back</button>
+            </div>
+            <div class="col-sm col-sm-6 ">
+                <table ng-show="dashboard.page.has_options">
+                    <br><br>
+                    <tbody>
+                        <tr>
+                            <td><button class="btn btn-info" ng-click="dashboard.gotoIPage()">Read Instructions & Help</button></td>
+                            <td> <button class="btn btn-info" ng-click="dashboard.gotoSPage()">Read Scenario</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class=" col-sm col-xs-3 rgap">
+                <button class="btn btn-success rfloat" ng-click="dashboard.gotoNextQuestion()">Next</button>
+            </div>
+        </div>
+
+        
+    </div>
+
+
+
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assetsjs/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+<!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+
+<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+
+<script src="assets/js/d3.min.js"></script>
+<script src="assets/js/lodash.min.js"></script>
+<script src="assets/js/angular.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/trace-store.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/transparency-dashboard.js"></script>
+
+
+</body>
+
+</html>
