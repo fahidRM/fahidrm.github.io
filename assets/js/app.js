@@ -652,10 +652,10 @@ angular.module('app.pages', [])
                                 category: "PLAN_TRACE",
                                 contents: [
                                     {
-                                        IDENTIFIER: "Reschedule event",
+                                        IDENTIFIER: "Reschedule event ",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: []
+                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable']
                                     },
                                     {
                                         IDENTIFIER: "Fix event time",
