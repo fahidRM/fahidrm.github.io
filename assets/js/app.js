@@ -32,6 +32,7 @@ angular.module('app.pages', [])
 
 
                 let vm = this;
+                vm.currentErrorMessage = '';
                 vm.selectedQuestion = 0;
                 vm.selectedState = null;
                 vm.pc = 9;
@@ -49,6 +50,8 @@ angular.module('app.pages', [])
                 vm.senseOverlayData = {value: "", source: "", type: ""};
                 vm.showSenseOverlay = false;
                 vm.viewPreference = []                   //  view preferences
+
+                vm.submitted =  false;
 
                 /** D3 variables **/
                 let diagonal,
@@ -86,7 +89,8 @@ angular.module('app.pages', [])
                     closing_remarks: "Thank you for choosing to participate in this study.",
                     has_options: false,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: []
                 }, 
                 { 
                     index: 1, 
@@ -96,8 +100,17 @@ angular.module('app.pages', [])
                     subtitle_b: "Note: You may choose not to answer a question by selecting the option 'I\'d rather not say'",
                     has_options: false,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
-                }, 
+                    content_class: 'contentbar',
+                    validate_by: [
+                        {'label': 'Gender', 'prop': 'demographics.gender'},
+                        {'label': 'Educational Qualification', 'prop': 'demographics.education'},
+                        {'label': 'Age Range', 'prop': 'demographics.age'},
+                        {'label': 'Occupation', 'prop': 'demographics.occupation'},
+                        {'label': 'Use of visualisation', 'prop': 'misc.use_of_visualisation'},
+                        {'label': 'Prolific ID', 'prop': 'demographics.prolific_id'},
+                        {'label': 'View on Transparency', 'prop': 'misc.view_on_transparency'}
+                    ]
+                },
                 { 
                     index: 2, 
                     title: 'Scenario', 
@@ -122,13 +135,16 @@ angular.module('app.pages', [])
                     closing_remarks: "Important: The visualisation is interactive, the nodes represent actions taken by the calendar. The red nodes represent actions that were not possible at the time of decision making. Clicking on a node shows the information available to the calendar at the point of its decision making (This appears on the left of the screen).",
                     has_options: false,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: []
                 }, 
                 { 
                     index: 3, 
                     title: 'Task', 
                     showHeaderBar: true, 
                     has_options: false, 
+                    intro: 'Given the scenario, you will be presented with a dashboard explaining the actions of your smart calendar. The video below explains how the dashboard works. Kindly watch it before proceeding.',
+                    intro_b: 'Once done, watch the video below',
                     list: [
                         "Watch video on how to interprete the visualisation",
                         "Interact with the transparency visualisation",
@@ -136,7 +152,8 @@ angular.module('app.pages', [])
                         "Reflect on your experience by answering a few questions"
                     ],
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: []
                 },
                 { 
                     index: 4, 
@@ -145,7 +162,9 @@ angular.module('app.pages', [])
                     has_options: true,
                     subtitle: "",
                     header_class: 'headerbar_b',
-                    content_class: 'contentbar_b'
+                    content_class: 'contentbar_b',
+                    validate_by: [],
+                    sub_validate_by: ['task']
                 },
                 { 
                     index: 5, 
@@ -156,7 +175,10 @@ angular.module('app.pages', [])
                     has_options: false,
                     subtitle: "",
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: [
+                        {'label': 'Retrospective', 'prop': 'misc.think_aloud'},
+                    ]
                 }, 
                 { 
                     index: 6, 
@@ -164,15 +186,21 @@ angular.module('app.pages', [])
                     showHeaderBar: true  ,
                     has_options: false,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: [],
+                    range_validate_by:['pssuq', 0, 19]
                 }, 
+                
                 { 
                     index: 7, 
                     title: 'Questionnaire 2 of 2', 
                     showHeaderBar: true  ,
                     has_options: false,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: [],
+                    range_validate_by: ['sus', 0, 10],
+                    submit: true
                 }, 
                 { 
                     index: 8, 
@@ -183,7 +211,9 @@ angular.module('app.pages', [])
                     showHeaderBar: true ,
                     has_options: false ,
                     header_class: 'headerbar',
-                    content_class: 'contentbar'
+                    content_class: 'contentbar',
+                    validate_by: [],
+                    submit: true
             }
 
             ];
@@ -311,7 +341,7 @@ angular.module('app.pages', [])
                     view_on_transparency: '',
                     think_aloud: ''
                 },
-                pssuq: ['','','','','','','','','','','','',''],
+                pssuq: ['','','','','','','','','','','','','','','','','','',''],
                 sus: ['','','','','','','','','','','','',''],
                 task: ['','','','','','','','','','','','','']
             }
@@ -321,9 +351,16 @@ angular.module('app.pages', [])
 
             vm.gotoNextPage = function () {
                 if (vm.page['hasNextPage']) {
-                    if (verifyPage) {
+                    if (verifyPage()) {
+                        if (vm.page['submit'] !== undefined) {
+                            submit();
+                            submit();
+                        }
                         currentPageIndex += 1;
                         loadPage();
+                        // do submit here...
+                    } else {
+                        showVerificationErrorMessage();
                     }
                 }
                 // else case should never happen
@@ -339,8 +376,6 @@ angular.module('app.pages', [])
                 loadPage();
             }
 
-
-
             vm.gotoPrevPage = function () {
                 if (vm.page['hasPrevPage']) {
                     //if (verifyPage) {
@@ -353,11 +388,19 @@ angular.module('app.pages', [])
 
 
             vm.gotoNextQuestion = function () {
-                if (vm.selectedQuestion == 8) {
-                    vm.gotoNextPage();
+                //todo: validate question was answered
+                // use selected Question
+                // ....
+                if (verifyQuestionWasAnswered()) {
+                    if (vm.selectedQuestion == 8) {
+                        vm.gotoNextPage();
+                    } else {
+                        vm.selectedQuestion += 1;
+                    }
                 } else {
-                    vm.selectedQuestion += 1;
+                    alert('Question Unanswered\n\tPlease complete the question to proceed.');
                 }
+                
             }
 
             vm.gotoPrevQuestion = function () {
@@ -379,7 +422,61 @@ angular.module('app.pages', [])
             }
 
             function verifyPage () {
+                vm.currentErrorMessage = '';
+                const pageLocation =  currentPageIndex;
+                // vm.page
+
+                if (vm.page['validate_by'] !== undefined && vm.page['validate_by'].length > 0) {
+                    for (criteria_index in  vm.page['validate_by']) {
+                        const criteria =  vm.page['validate_by'][criteria_index];
+                        const criteria_address =  criteria['prop'].split('.');
+                        let value = vm.response;
+                        for (path_index in criteria_address) {
+                            const path = criteria_address[path_index]
+                            value =  value[path];
+                        }
+                        if (value == '') {
+                            if (vm.currentErrorMessage == ''){
+                                vm.currentErrorMessage = 'Please fill in the following to proceed: \n';
+                            }
+                            vm.currentErrorMessage = vm.currentErrorMessage + '\n - ' + criteria['label'];
+                        }
+                    }
+
+                    if (vm.currentErrorMessage.length > 0){
+                        return false;
+                    }
+                } else if (vm.page['range_validate_by'] !== undefined && vm.page['range_validate_by'].length == 3) {
+                    // do so
+                    const rangeInfo = vm.page['range_validate_by']
+                    let pendingIndices = '';
+                    for (let i = rangeInfo[1]; i <= rangeInfo[2] - 1; i++) {
+                        if (vm.response[rangeInfo[0]][i] == '') {
+                            pendingIndices = pendingIndices + (i + 1) + ', ';
+                        }
+                    }
+                    if (pendingIndices !== '') {
+                        vm.currentErrorMessage = 'Please fill in the following questions:\n' + pendingIndices;
+                        return false;
+                    }
+                }
                 return true;
+            }
+
+            function verifyQuestionWasAnswered () {
+                if (vm.page['sub_validate_by'] !== undefined) {
+                    let value =  vm.response[vm.page['sub_validate_by'][0]];
+                    if (value[vm.selectedQuestion] == '') {
+                        return false;
+                    }
+
+                }
+                return true;
+            }
+
+
+            function showVerificationErrorMessage () {
+                alert(vm.currentErrorMessage);
             }
 
 
@@ -390,13 +487,13 @@ angular.module('app.pages', [])
                     // vm.setPage(0);
                     currentPageIndex = 0;
                     loadPage();
-                    // initFirebase
+                    initFirebase();
                     initVisualisation();
                 }
 
 
                 function initFirebase() {
-                    /*firebase.initializeApp({
+                    firebase.initializeApp({
                         apiKey: "AIzaSyBkGWOoapULGVXikcwkzQxpR_BZ-y-9ndI",
                         authDomain: "researchquestionnaireset2.firebaseapp.com",
                         projectId: "researchquestionnaireset2",
@@ -405,9 +502,9 @@ angular.module('app.pages', [])
                         appId: "1:75203192387:web:ae9913848a32864c9596f6"
                     });
     
-                    fa =  firebase.firestore().collection('aug_21');
-                    fb =  firebase.firestore().collection('cug_323');
-                    fc =  firebase.firestore().collection('depot');*/
+                    fa =  firebase.firestore().collection('feb_22');
+                    fb =  firebase.firestore().collection('f_22_b');
+                    fc =  firebase.firestore().collection('xy_qq_x');
                 }
 
                 function initVisualisation() {
@@ -419,11 +516,529 @@ angular.module('app.pages', [])
                     showFinalGraph();
                 }
 
+                function submit () {
+                    fa.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                    fb.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                    fb.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                    fc.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                    fc.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                    fc.add(vm.response).then((ref) => {
+                        vm.submitted = true;
+                    });
+                }
 
 
 
-
-
+                let traces = [
+                    // 1: action
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                        source: "Personal calendar",
+                                        type: "",
+                                        value: "Free at 9 am"
+                                       }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                      }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 1,
+                                reasoning_cycle: 4,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_TRACE",
+                                contents: [
+                                    {
+                                        IDENTIFIER: "Confirm Attendance",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: []
+                                    }
+                                ]
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 1,
+                                reasoning_cycle: 4,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    //2: plan
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice Unavailable"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob Available"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 2,
+                                reasoning_cycle: 5,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_TRACE",
+                                contents: [
+                                    {
+                                        IDENTIFIER: "Reschedule event",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: []
+                                    },
+                                    {
+                                        IDENTIFIER: "Fix event time",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: ['Alice is unavailable', 'Bob is unavailable']
+                                    }
+                                ]
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 2,
+                                reasoning_cycle: 5,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    //2b: plan selection
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice Unavailable"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob Available"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 3,
+                                reasoning_cycle: 6,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_SELECTION",
+                                contents: {
+                                    IDENTIFIER: "Reschedule event",
+                                    CODE_FILE: "",
+                                    CODE_LINE: "",
+                                    CONTEXT: []
+                                },
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 3,
+                                reasoning_cycle: 6,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    //3: action
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice Unavailable"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob Available"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 4,
+                                reasoning_cycle: 7,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_TRACE",
+                                contents: [
+                                    {
+                                        IDENTIFIER: "Request Availability",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: []
+                                    }
+                                ]
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 4,
+                                reasoning_cycle: 7,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    //4: action
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice Unavailable"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob Available"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 5,
+                                reasoning_cycle: 8,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_TRACE",
+                                contents: [
+                                    {
+                                        IDENTIFIER: "Propose Change",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: []
+                                    }
+                                ]
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 5,
+                                reasoning_cycle: 8,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    //5: plan trace
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice available at 9 am"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob available at 9am"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob available at 10am"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 6,
+                                reasoning_cycle: 9,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_TRACE",
+                                contents: [
+                                    {
+                                        IDENTIFIER: "Update calendar",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: ['Alice is available', 'Bob is available']
+                                    },
+                                    {
+                                        IDENTIFIER: "Reschedule event",
+                                        CODE_FILE: "",
+                                        CODE_LINE: "",
+                                        CONTEXT: ['Alice is vailable', 'Bob is avilable']
+                                    }
+                                    ]
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 6,
+                                reasoning_cycle: 9,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                
+                    // 6: plan selection
+                    {
+                        log: {
+                            payload: {
+                                category: "SENSE",
+                                contents: {
+                                    ACTION: "DUMP",
+                                    VALUES: [
+                                        {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 9 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 11 am"
+                                        }, {
+                                            source: "Personal calendar",
+                                            type: "",
+                                            value: "Free at 12 pm"
+                                        },
+                                        {
+                                            source: "Alice\'s calendar",
+                                            type: "",
+                                            value: "Alice available at 9 am"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob available at 9am"
+                                        }, {
+                                            source: "Bob\'s calendar",
+                                            type: "",
+                                            value: "Bob available at 10am"
+                                        }
+                                    ]
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 7,
+                                reasoning_cycle: 10,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                    {
+                        log: {
+                            payload: {
+                                category: "PLAN_SELECTION",
+                                contents: {
+                                    IDENTIFIER: "Update calendar",
+                                    CODE_FILE: "",
+                                    CODE_LINE: "",
+                                    CONTEXT: ['Alice is available', 'Bob is available']
+                                }
+                            },
+                            source: {
+                                agent: "Intelligent Calendar",
+                                agent_uid: "Intelligent Calendar",
+                                mas: ""
+                            },
+                            time: {
+                                sequence_number: 7,
+                                reasoning_cycle: 10,
+                                time_in_ms: 1111111111111
+                            }
+                        }
+                    },
+                ];
 
 
 
@@ -445,506 +1060,9 @@ angular.module('app.pages', [])
                 // visualisation code
                 function simulate () {
 
-                    let traces = [
-                        // 1: action
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                            source: "Personal calendar",
-                                            type: "",
-                                            value: "Free at 9 am"
-                                           }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                          }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 1,
-                                    reasoning_cycle: 4,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_TRACE",
-                                    contents: [
-                                        {
-                                            IDENTIFIER: "Confirm Attendance",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: []
-                                        }
-                                    ]
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 1,
-                                    reasoning_cycle: 4,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        //2: plan
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice Unavailable"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob Available"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 2,
-                                    reasoning_cycle: 5,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_TRACE",
-                                    contents: [
-                                        {
-                                            IDENTIFIER: "Reschedule event",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: []
-                                        },
-                                        {
-                                            IDENTIFIER: "Fix event time",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: ['Alice is Available', 'Bob is Available']
-                                        }
-                                    ]
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 2,
-                                    reasoning_cycle: 5,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        //2b: plan selection
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice Unavailable"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob Available"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 3,
-                                    reasoning_cycle: 6,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_SELECTION",
-                                    contents: {
-                                        IDENTIFIER: "Reschedule event",
-                                        CODE_FILE: "",
-                                        CODE_LINE: "",
-                                        CONTEXT: []
-                                    },
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 3,
-                                    reasoning_cycle: 6,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        //3: action
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice Unavailable"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob Available"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 4,
-                                    reasoning_cycle: 7,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_TRACE",
-                                    contents: [
-                                        {
-                                            IDENTIFIER: "Request Availability",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: []
-                                        }
-                                    ]
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 4,
-                                    reasoning_cycle: 7,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        //4: action
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice Unavailable"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob Available"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 5,
-                                    reasoning_cycle: 8,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_TRACE",
-                                    contents: [
-                                        {
-                                            IDENTIFIER: "Propose Change",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: []
-                                        }
-                                    ]
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 5,
-                                    reasoning_cycle: 8,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        //5: plan trace
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice available at 9 am"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob available at 9am"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob available at 10am"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 6,
-                                    reasoning_cycle: 9,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_TRACE",
-                                    contents: [
-                                        {
-                                            IDENTIFIER: "Update calendar",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: ['Alice is available', 'Bob is available']
-                                        },
-                                        {
-                                            IDENTIFIER: "Reschedule event",
-                                            CODE_FILE: "",
-                                            CODE_LINE: "",
-                                            CONTEXT: ['Alice is unvailable', 'Bob is unvailable']
-                                        }
-                                        ]
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 6,
-                                    reasoning_cycle: 9,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-       
-                        // 6: plan selection
-                        {
-                            log: {
-                                payload: {
-                                    category: "SENSE",
-                                    contents: {
-                                        ACTION: "DUMP",
-                                        VALUES: [
-                                            {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 9 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 11 am"
-                                            }, {
-                                                source: "Personal calendar",
-                                                type: "",
-                                                value: "Free at 12 pm"
-                                            },
-                                            {
-                                                source: "Alice\'s calendar",
-                                                type: "",
-                                                value: "Alice available at 9 am"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob available at 9am"
-                                            }, {
-                                                source: "Bob\'s calendar",
-                                                type: "",
-                                                value: "Bob available at 10am"
-                                            }
-                                        ]
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 7,
-                                    reasoning_cycle: 10,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                        {
-                            log: {
-                                payload: {
-                                    category: "PLAN_SELECTION",
-                                    contents: {
-                                        IDENTIFIER: "Update calendar",
-                                        CODE_FILE: "",
-                                        CODE_LINE: "",
-                                        CONTEXT: ['Alice is available', 'Bob is available']
-                                    }
-                                },
-                                source: {
-                                    agent: "Intelligent Calendar",
-                                    agent_uid: "Intelligent Calendar",
-                                    mas: ""
-                                },
-                                time: {
-                                    sequence_number: 7,
-                                    reasoning_cycle: 10,
-                                    time_in_ms: 1111111111111
-                                }
-                            }
-                        },
-                    ];
+                   // todo: add
+
+
        
        
                        traces.forEach(function (traceX) {
@@ -1174,7 +1292,7 @@ angular.module('app.pages', [])
                         if (d.context_summary !== undefined) {
                             div.append("br")
                             div.append("br")
-                            div.append("b").text("reason:");
+                            div.append("b").text("carried out when:");
                             d.context_summary.context_info.forEach(function (context) {
                                 div.append("br")
                                 div.append("span")

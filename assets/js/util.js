@@ -55,10 +55,10 @@ angular.module('app.util', [])
          * @param agentKnowledgeBaseSnapshot    Snapshot of the agent's knowledge base at the point of planning
          * @returns {{context_info: (string|boolean)[][], context_passed: boolean}|{context_info: *[], context_passed: boolean}}
          */
-        function verifyContext ( context, agentKnowledgeBaseSnapshot) {
+        function verifyContext ( context, agentKnowledgeBaseSnapshot, flagPositive) {
             if (context === undefined || context === "null" || context.length === 0) { return {
                 context_passed: true,
-                context_info: [ ["None", true]]
+                context_info: [ ["Necessary Action", true]]
             } }
 
             let evaluationPassed = true;
@@ -70,10 +70,11 @@ angular.module('app.util', [])
 
                 if (contextElement === "null") {
                     evaluationSummary.push([
-                        "No context",
+                        "Necessary Action",
                         true
                     ])
                 } else {
+                    
                     let evaluatesIfTrue = ! contextElement.startsWith("not");
                     if (! evaluatesIfTrue) { contextElement = contextElement.replace("not", "").trim(); }
 
@@ -83,10 +84,19 @@ angular.module('app.util', [])
                         contextElement.indexOf("_") > -1)
 
                     evaluationPassed = evaluationPassed && partPass;
-                    evaluationSummary.push([
-                        evaluatesIfTrue ? contextElement : "not " +  contextElement,
-                        partPass
-                    ])
+
+                    if (flagPositive) {
+                        evaluationSummary.push([
+                            evaluatesIfTrue ? contextElement : "not " +  contextElement,
+                            flagPositive
+                        ])
+                    } else {
+                        evaluationSummary.push([
+                            evaluatesIfTrue ? contextElement : "not " +  contextElement,
+                            partPass
+                        ])
+                    }
+                    
                 }
             })
 

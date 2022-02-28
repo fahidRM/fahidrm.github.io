@@ -62,7 +62,7 @@
                             <td>Educational Qualification: <span class="red">*</span></td>
                             <td>
                                 <select 
-                                    ng-model="dashbaord.response.demographics.education"
+                                    ng-model="dashboard.response.demographics.education"
                                     ng-options="option for option in dashboard.EDUCATION_OPTIONS">
                                 </select>
                             </td>
@@ -100,7 +100,7 @@
                         <tr class="spaced_rows">
                             <td>What do you think transparency in AI is? <span class="red">*</span></td>
                             <td>
-                                <textarea rows="5" ng-model="dashbaord.response.misc.view_on_transparency"></textarea>
+                                <textarea rows="5" ng-model="dashboard.response.misc.view_on_transparency"></textarea>
                             </td>
                         </tr>
                     </tbody>
@@ -153,7 +153,19 @@
         </div>
 
         <!-- instructions & help page -->
+        <div class="row bounded" ng-show="dashboard.page.index == 3">
+            <div class="page_b">
+                <h4>Instruction</h4>
+                <span>{{dashboard.page.intro}}</span><br>
+                <!-- video -->
+                <video width="80%" height="80%" controls>
+                    <source src="assets/data/info.mp4" type="video/mp4">
+                    Your browser does not support the video tag.<br>
+                    Please use Google Chrome or Safari.
+                  </video>
 
+            </div>
+        </div>
         
 
         <!-- questionnaire set 1 -->
@@ -244,12 +256,13 @@
                 
             </div>
             <div class=" col-sm col-xs-3 rgap">
-                <button class="btn btn-success rfloat" 
-                        ng-click="dashboard.gotoNextPage()">Next</button>
+                <button class="btn btn-success rfloat"
+                        ng-hide="! dashboard.page.hasNextPage"
+                        ng-click="dashboard.gotoNextPage()">Proceed</button>
                 
-                <button class="btn btn-succes rfloat" 
-                        ng-show="dashbaord.page.index === (dashbaord.pc -1)"
-                        ng-click="dashboard.submit()">Submit</button>
+                <!--button class="btn btn-succes rfloat" 
+                        ng-show="dashboard.page.index === (dashboard.pc -1)"
+                        ng-click="dashboard.submit()">Submit</button-->
             </div>
         </div>
 

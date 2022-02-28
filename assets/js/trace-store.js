@@ -233,9 +233,20 @@
 
                  history[agent].current = expandedOptions[visibleIndex];
                  history[agent].branch.forEach((branchEntry) => {
+
+                    let flagPositive = false;
+                    if (branchEntry.payload.contents.IDENTIFIER== "Update calendar") {
+                        flagPositive = true;
+                    }
+                    
+                    if (branchEntry.payload.contents.IDENTIFIER.endsWith(" ")) {
+                        flagPositive = true;
+                    }
+
                     branchEntry["context_summary"] = utility.verifyContext(
                          branchEntry.payload.contents['CONTEXT'],
-                         history[agent].beliefs[branchEntry.time['sequence_number']]
+                         history[agent].beliefs[branchEntry.time['sequence_number']],
+                         flagPositive
                     );
                  });
 
