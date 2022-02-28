@@ -727,10 +727,10 @@ angular.module('app.pages', [])
                             payload: {
                                 category: "PLAN_SELECTION",
                                 contents: {
-                                    IDENTIFIER: "Reschedule event",
+                                    IDENTIFIER: "Reschedule event ",
                                     CODE_FILE: "",
                                     CODE_LINE: "",
-                                    CONTEXT: []
+                                    CONTEXT: ['Alice is unavailable', 'Bob is unavilable']
                                 },
                             },
                             source: {
