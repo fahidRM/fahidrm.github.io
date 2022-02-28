@@ -661,7 +661,7 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Fix event time",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is unavailable', 'Bob is unavailable']
+                                        CONTEXT: ['Alice is available', 'Bob is available']
                                     }
                                 ]
                             },
@@ -949,7 +949,7 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Reschedule event",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is vailable', 'Bob is avilable']
+                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable']
                                     }
                                     ]
                             },
