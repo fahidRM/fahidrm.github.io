@@ -17,11 +17,49 @@
     
 
     <!-- the main content-->
-    <div class="contentbar" ng-hide="dashboard.page.index == 4">
+    <div class="contentbar" ng-hide="dashboard.page.index == 4 || dashboard.page.index == 8 ">
 
         <!-- Introduction page -->
         <div class="row bounded" ng-show="dashboard.page.index == 0">
-            <div class="page">
+            <div class="pxpx row">
+                <div class="col-md-4">
+                        <h4>Aim of study</h4>
+                        This study investigates this study is to understand what design decisions <br>
+                        support the understanding of intelligent systems using visualisations <br>
+                        <br><Br>
+                        <h4>Procedure</h4>
+                        This experiment consists of two identical parts (description follows)<br>
+                        during which you will be asked to interact with a visualisation describing <br>
+                        the behaviour of an intelligent system.<br>
+                        After interacting with the said system, you would be presented with a set of<br>
+                        questionnaires to answer.<br>
+                        You will repeat this process twice (once for each visualisaiton type) and <br>
+                        afterwards you will be asked to reflect on the process.
+
+
+
+                </div>
+                <div class="col-md-4">
+
+                        <h4>Confidentiality</h4>
+                        All the information collected during the study period will be kept strictly confidential.<br>
+                        Prolific ID will be used to ensure your anonymity, and therefore your identity will not <br>
+                        be disclosed in any future academic publication or report.<br>
+
+                        If you wish to take part in this study, click on the "Next[Demographics]" button
+                        <br><Br>
+                        <h4>Withdrawal</h4>
+                        <p class="text-danger">Please note, you may choose to withdraw from this study at any point in time. <br>
+                            To withdraw after participation, kindly mail the researcher on the prolific <br>
+                            platform along with your Prolific ID to erase your data.<br>
+                            The researcher can be contacted by navigating to the submissions tab, identifying the<br>
+                            research name and clicking the email icon. Additionally, using the "return" button you <br>
+                            can withdraw your participation.<br></p>
+
+                </div>
+                <div class="col-md-4">
+
+
                 <h4 class="">{{dashboard.page.title}}</h4>
                 <span>{{dashboard.page.closing_remarks}}</span>
                 <br><br>
@@ -34,14 +72,16 @@
                 <br>
                 <br>
                 <span class="text-danger">{{dashboard.page.note_c}}</span><br>
+                </div>
             </div>
         </div>
 
 
         <!-- Demographics -->
         <div class="row bounded" ng-show="dashboard.page.index == 1">
-
             <div class="page">
+
+
                 <h4 class="">{{dashboard.page.title}}</h4>
                 <br>
                 <span class="toned-down">{{dashboard.page.subtitle}}</span><br>
@@ -99,7 +139,10 @@
                             </td>
                         </tr>
                         <tr class="spaced_rows">
-                            <td>What do you think transparency in AI is? <span class="red">*</span></td>
+                            <td>Consent and Declaration <span class="red">*</span><br>
+                                <span class="text-danger">Type in the words 'consent', 'withdrawal', 'information' <br>
+                                to indicate that you consent to participate in this study<br>
+                            have read through the information sheet and are aware<br> you can withdraw at any time during the study</span></td>
                             <td>
                                 <textarea rows="5" ng-model="dashboard.response.misc.view_on_transparency"></textarea>
                             </td>
@@ -110,11 +153,6 @@
                 <br>
                 <span class="text-danger">{{dashboard.page.note_c}}</span><br>
             </div>
-
-
-   
-            
-            
         </div>
 
         <!-- scenario page -->
@@ -170,7 +208,7 @@
         
 
         <!-- questionnaire set 1 -->
-        <div class="row bounded" ng-show="dashboard.page.index == 5">
+        <div class="row bounded" ng-show="dashboard.page.index == 500">
             <div class="page_c">
                 <h4 class="">{{dashboard.page.title}}</h4>
                 <span class="text-danger">{{dashboard.page.subtitle}}</span>
@@ -183,7 +221,7 @@
         </div>
 
         <!-- questionnaire set 2 -->
-        <div class="row bounded" ng-show="dashboard.page.index == 6">
+        <div class="row bounded" ng-show="dashboard.page.index == 5">
             <div class="page_d">
                 <h4>{{dashboard.page.title}}</h4>
                 <br>
@@ -207,7 +245,7 @@
 
         <!-- questionnaire set 3 -->
 
-        <div class="row bounded" ng-show="dashboard.page.index == 7">
+        <div class="row bounded" ng-show="dashboard.page.index == 6">
             <div class="page">
                 <h4>{{dashboard.page.title}}</h4>
                 <br>
@@ -228,8 +266,97 @@
                 </table>
             </div>
         </div>
+
+
+        <!-- scenario page -->
+        <div class="row bounded" ng-show="dashboard.page.index == 7">
+            <div class="page_b">
+                <h4>{{dashboard.page.title}}</h4>
+                <span class="text-info">{{dashboard.page.subtitle}}</span>
+                <br>
+                <span>{{dashboard.page.intro}}</span><br>
+                <span>{{dashboard.page.intro_b}}</span><br><br>
+                <span>{{dashboard.page.list_intro}}</span><br>
+                <table>
+                    <tbody>
+                    <tr ng-repeat="entry in dashboard.page.list">
+                        <td>{{entry.time}}</td>
+                        <td>{{entry.note}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <span class="text-danger">THIS VERSION OF THE TOOL DOES NOT REQUIRE YOU TO CLICK ON NODES<br>AND CONTAINS ADDITIONAL INFORMATION</span>
+
+                <br>
+                <span>{{dashboard.page.list_two_intro}}</span><br>
+                <table>
+                    <tbody>
+                    <tr ng-repeat="entry in dashboard.page.list_two">
+                        <td>{{entry.time}}</td>
+                        <td>{{entry.note}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br><br>
+                <span>{{dashboard.page.comment}}</span><br>
+                <span>{{dashboard.page.comment_2}}</span><br>
+
+
+            </div>
+        </div>
+
+
+        <!-- questionnaire set 1 OF 2 -->
+        <div class="row bounded" ng-show="dashboard.page.index == 9">
+            <div class="page_d">
+                <h4>{{dashboard.page.title}}</h4>
+                <br>
+                <span class="toned-down">{{dashboard.page.subtitle}}</span>
+                <br>
+                <table>
+                    <tbody>
+                    <tr ng-repeat="question in dashboard.LIKERT.PSSUQ">
+                        <td colspan="3" >{{question}}</td>
+                        <td colspan="1">
+                            <select
+                                    ng-model="dashboard.response.pssuq_b[$index]"
+                                    ng-options="option for option in dashboard.LIKERT.OPTIONS">
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- questionnaire set 2 OF 2 -->
+
+        <div class="row bounded" ng-show="dashboard.page.index == 10">
+            <div class="page">
+                <h4>{{dashboard.page.title}}</h4>
+                <br>
+                <span class="toned-down">{{dashboard.page.subtitle}}</span>
+                <br>
+                <table>
+                    <tbody>
+                    <tr ng-repeat="question in dashboard.LIKERT.SUS">
+                        <td colspan="3">{{question}}</td>
+                        <td colspan="1">
+                            <select
+                                    ng-model="dashboard.response.sus_b[$index]"
+                                    ng-options="option for option in dashboard.LIKERT.OPTIONS">
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
         <!-- closing remarks -->
-        <div class="row bounded" ng-show="dashboard.page.index == 8">
+        <div class="row bounded" ng-show="dashboard.page.index == 11">
             <div class="page">
                 <h4 class="">{{dashboard.page.title}}</h4>
                 <br><small><b>PROLIFIC COMPLETION CODE:</b></small><br>
@@ -244,9 +371,8 @@
         
     </div>
 
-    <div ng-hide="dashboard.page.index == 4" class="headerbar">
+    <div ng-hide="dashboard.page.index == 4 || dashboard.page.index == 8" class="headerbar">
         <!-- header: shows on certain pages -->
-
         <div class="row">
             <div class="col-sm col-sm-3 lgap">
                 <button class="btn btn-danger" 
@@ -270,11 +396,11 @@
         
     </div>
 
-    <div class="contentbar_b" ng-show="dashboard.page.index == 4">
+    <div class="contentbar_b" ng-show="dashboard.page.index == 4 || dashboard.page.index == 8">
         <!-- task page -->
         <div class="row bounded" >
                 <div class="col-md col-md-3 left_bordered">
-                    <nav class="nav-group ">
+                    <nav class="nav-group " >
                         <ul class="list-group cap-at-200">
                             <li class="searchbar">
                                 <input class="form-control" type="text"
@@ -349,6 +475,55 @@
         </div>
 
         
+    </div>
+
+    <div ng-show="dashboard.page.index == 8" class="headerbar_b">
+        <!-- header: shows on certain pages -->
+        <div class = "row">
+            <div class="col-sm col-sm-2"></div>
+            <div class="col-sm col-sm-8">
+                <table ng-show="dashboard.page.has_options">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span>{{dashboard.TASKS_REV[dashboard.selectedQuestion].question}}</span>
+                        </td>
+                        <td>
+                            <select
+                                    ng-model="dashboard.response.task_b[dashboard.selectedQuestion]"
+                                    ng-options="option for option in dashboard.TASKS_REV[dashboard.selectedQuestion].options">
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm col-sm-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm col-sm-3 lgap">
+                <button class="btn btn-danger"
+                        ng-show="dashboard.page.hasPrevPage"
+                        ng-click="dashboard.gotoPrevQuestion()">Back</button>
+            </div>
+            <div class="col-sm col-sm-6 ">
+                <table ng-show="dashboard.page.has_options">
+                    <br><br>
+                    <tbody>
+                    <tr>
+                        <!--td><button class="btn btn-info" ng-click="dashboard.gotoIPage()">Read Instructions & Help</button></td-->
+                        <td> <button class="btn btn-info" ng-click="dashboard.gotoSPage(2)">Read Scenario</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class=" col-sm col-xs-3 rgap">
+                <button class="btn btn-success rfloat" ng-click="dashboard.gotoNextQuestion()">Next</button>
+            </div>
+        </div>
+
+
     </div>
 
 

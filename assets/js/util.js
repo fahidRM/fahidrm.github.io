@@ -58,7 +58,7 @@ angular.module('app.util', [])
         function verifyContext ( context, agentKnowledgeBaseSnapshot, flagPositive) {
             if (context === undefined || context === "null" || context.length === 0) { return {
                 context_passed: true,
-                context_info: [ ["Necessary Action", true]]
+                context_info: [ ["Always", true]]
             } }
 
             let evaluationPassed = true;
@@ -70,7 +70,7 @@ angular.module('app.util', [])
 
                 if (contextElement === "null") {
                     evaluationSummary.push([
-                        "Necessary Action",
+                        "Always",
                         true
                     ])
                 } else {

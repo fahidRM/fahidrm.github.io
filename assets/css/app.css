@@ -51,6 +51,9 @@
     stroke: silver;
     stroke-width: 1px;
 }
+.pxpx{
+    padding: 30px;
+}
 div.tooltip {
     position: absolute;
     background: #f5fcfa;
@@ -60,6 +63,7 @@ div.tooltip {
     max-width: 200px;
     max-height: 500px;
     padding: 7px 15px;
+    /*z-index: 10000000;*/
     pointer-events: none;
     text-align: left;
 }

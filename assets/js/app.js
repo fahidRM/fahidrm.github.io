@@ -50,12 +50,14 @@ angular.module('app.pages', [])
                 vm.senseOverlayData = {value: "", source: "", type: ""};
                 vm.showSenseOverlay = false;
                 vm.viewPreference = []                   //  view preferences
+                vm.showSidebar = false
 
                 vm.submitted =  false;
 
                 /** D3 variables **/
                 let diagonal,
                     div,            // container div of the SVG chart
+                    default_div,
                     duration = 0,   // transition period
                     margin = {top: 5, right: 10, bottom: 5, left: 10}, // display margin
                     i = 0,
@@ -108,7 +110,10 @@ angular.module('app.pages', [])
                         {'label': 'Occupation', 'prop': 'demographics.occupation'},
                         {'label': 'Use of visualisation', 'prop': 'misc.use_of_visualisation'},
                         {'label': 'Prolific ID', 'prop': 'demographics.prolific_id'},
-                        {'label': 'View on Transparency', 'prop': 'misc.view_on_transparency'}
+                        {'label': 'Consent & Declaration', 'prop': 'misc.view_on_transparency'}
+                    ],
+                    validate_has: [
+                        {'label': 'Consent & Declaration', 'prop': 'misc.view_on_transparency', 'values': ['consent', 'withdrawal', 'information']}
                     ]
                 },
                 { 
@@ -157,7 +162,7 @@ angular.module('app.pages', [])
                 },
                 { 
                     index: 4, 
-                    title: 'Using the visualisation', 
+                    title: 'Using the visualisation - 1',
                     showHeaderBar: true , 
                     has_options: true,
                     subtitle: "",
@@ -166,7 +171,7 @@ angular.module('app.pages', [])
                     validate_by: [],
                     sub_validate_by: ['task']
                 },
-                { 
+                /*{
                     index: 5, 
                     title: 'Retrospective', 
                     subtitle: 'It is very important to answes the following questions as honestly as you can (write as much as you can)',
@@ -179,10 +184,12 @@ angular.module('app.pages', [])
                     validate_by: [
                         {'label': 'Retrospective', 'prop': 'misc.think_aloud'},
                     ]
-                }, 
-                { 
-                    index: 6, 
-                    title: 'Questionnaire 1 of 2', 
+                }, */
+
+
+                {
+                    index: 5,
+                    title: 'Questionnaire 1 of 2 - Round 1',
                     showHeaderBar: true  ,
                     has_options: false,
                     header_class: 'headerbar',
@@ -192,18 +199,81 @@ angular.module('app.pages', [])
                 }, 
                 
                 { 
-                    index: 7, 
-                    title: 'Questionnaire 2 of 2', 
+                    index: 6,
+                    title: 'Questionnaire 2 of 2 - Round 1',
                     showHeaderBar: true  ,
                     has_options: false,
                     header_class: 'headerbar',
                     content_class: 'contentbar',
                     validate_by: [],
-                    range_validate_by: ['sus', 0, 10],
+                    range_validate_by: ['sus', 0, 10]
+                },
+
+                {
+                    index: 7,
+                    title: 'Scenario - (Review for the second tool)',
+                    showHeaderBar: false,
+                    subtitle: "You can return to this page at any point during the study",
+                    intro: "Your employer has recently introduced a smart calendar to help improve meeting attendance.",
+                    intro_b:  "A smart calendar may reschedule your events in advance and provides an interactive visualisation to explain its actions.",
+                    list_intro: "Event:   On Friday, you had scheduled your Monday appointments as follows (before the smart calendar made adjustments):",
+                    list: [
+                        { time: "10:00am    -   11:00am", note :"Meeting with Selena & Alison" },
+                        { time: "1:00pm	-	3:00pm", note :"Meeting with Chelsea & Derek" },
+                        { time: "4:00pm	-	5:00pm", note :"Meeting with Alice & Bob" }
+                    ],
+                    list_two_intro: "On Monday, your appointments had been rescheduled as follows (after the smart calendar made adjustments):",
+                    list_two: [
+                        { time: "9:00am	-	19:00am", note :"Meeting with Selena & Alison" },
+                        { time: "10:00am	-	11:00am", note :"Meeting with Chelsea & Derek" },
+                        { time: "1:00pm	-	3:00pm", note :"Meeting with Alice & Bob" }
+                    ],
+                    comment: "The smart calendar has provided a justification for its actions using a visualisation.",
+                    comment_2: "(You will be presented with this shortly)",
+                    closing_remarks: "Important: The visualisation is interactive, the nodes represent actions taken by the calendar. The red nodes represent actions that were not possible at the time of decision making. Clicking on a node shows the information available to the calendar at the point of its decision making (This appears on the left of the screen). PLEASE NOTE, THE STUDY IS ABOUT HOW THE TOOL MADE YOU UNDERSTAND THE SMART CALENDAR AND NOT ABOUT HOW THE SMART CALENDAR WORKS.",
+                    has_options: false,
+                    header_class: 'headerbar',
+                    content_class: 'contentbar',
+                    validate_by: []
+                },
+                {
+                    index: 8,
+                    title: 'Using the visualisation - 2',
+                    showHeaderBar: true ,
+                    has_options: true,
+                    subtitle: "",
+                    header_class: 'headerbar_b',
+                    content_class: 'contentbar_b',
+                    validate_by: [],
+                    sub_validate_by: ['task_b']
+                },
+
+                {
+                    index: 9,
+                    title: 'Questionnaire 1 of 2 - Round 2',
+                    showHeaderBar: true  ,
+                    has_options: false,
+                    header_class: 'headerbar',
+                    content_class: 'contentbar',
+                    validate_by: [],
+                    range_validate_by:['pssuq_b', 0, 19]
+                },
+
+                {
+                    index: 10,
+                    title: 'Questionnaire 2 of 2 - Round 2',
+                    showHeaderBar: true  ,
+                    has_options: false,
+                    header_class: 'headerbar',
+                    content_class: 'contentbar',
+                    validate_by: [],
+                    range_validate_by: ['sus_b', 0, 10],
                     submit: true
-                }, 
+                },
+
+
                 { 
-                    index: 8, 
+                    index: 11,
                     title: 'Thank you, Your participation is appreciated!', 
                     completion_code: "1554D4A9",
                     note: "Thank you for participating in this study.",
@@ -280,7 +350,48 @@ angular.module('app.pages', [])
                 }
             ];
 
-            vm.PSSUQ = [
+            vm.TASKS_REV = [
+
+                {
+                    question: 'Why was the Smart calendar unable to Fix the event time?',
+                    options: ['It was', 'Not everyone was available', 'I\'m unsure', 'The visualisation did not say'],
+                },
+                    {
+                        question: 'What criteria was required for the Smart calendar to reschedule the event?',
+                        options: ['None', 'Not everyone was available', 'I\'m unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'Using the visualisation, what time was the user (you) free when the smart calendar decided to reschedule events?',
+                        options: ['1pm', '11pm', '10am', '6am', 'I\'m Unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'What was the first task performed by the smart calendar?',
+                        options: [ 'Propose event time change', 'Confirm Participant Attendance', 'Fix event time', 'I\'m Unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'Which of these tasks did the smart calendar carry out?',
+                        options: ['Reschedule event', 'Fix event time', 'None of the above', 'Both', 'I\'m unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'What time was Bob not free?',
+                        options: ['10am', '9pm', '9am', 'I\'m unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'What time was Alice Free?',
+                        options: ['8pm', '3pm', '8am', '9am', 'I\'m unsure', 'The visualisation did not say'],
+                    },
+                    {
+                        question: 'What there a need to reschedule the event again after the first time?',
+                        options: ['Yes', 'I\'m unsure', 'The visualisation did not say', 'No'],
+                    },
+                    {
+                        question: 'Did the smart calendar update the calendar entry for the event?',
+                        options: ['Yes','No', 'I\'m unsure', 'The visualisation did not say'],
+                    }
+                ];
+
+
+                vm.PSSUQ = [
                 'a', 'b'
             ];
 
@@ -334,7 +445,10 @@ angular.module('app.pages', [])
                     education: '',
                     gender: '',
                     occupation: '',
-                    prolific_id: ''
+                    prolific_id: '',
+                    brief: '',
+                    consent: '',
+                    withdrawal: ''
                 },
                 misc: {
                     use_of_visualisation: '',
@@ -343,7 +457,10 @@ angular.module('app.pages', [])
                 },
                 pssuq: ['','','','','','','','','','','','','','','','','','',''],
                 sus: ['','','','','','','','','','','','',''],
-                task: ['','','','','','','','','','','','','']
+                task: ['','','','','','','','','','','','',''],
+                pssuq_b: ['','','','','','','','','','','','','','','','','','',''],
+                sus_b: ['','','','','','','','','','','','',''],
+                task_b: ['','','','','','','','','','','','','']
             }
 
 
@@ -366,9 +483,13 @@ angular.module('app.pages', [])
                 // else case should never happen
             }
 
-            vm.gotoSPage = function () {
+            vm.gotoSPage = function (v) {
                 currentPageIndex =  2;
+                if (v === 2) {
+                    currentPageIndex = 7;
+                }
                 loadPage();
+
             }
 
             vm.gotoIPage = function () {
@@ -392,7 +513,7 @@ angular.module('app.pages', [])
                 // use selected Question
                 // ....
                 if (verifyQuestionWasAnswered()) {
-                    if (vm.selectedQuestion == 8) {
+                    if (vm.selectedQuestion === 8) {
                         vm.gotoNextPage();
                     } else {
                         vm.selectedQuestion += 1;
@@ -411,11 +532,18 @@ angular.module('app.pages', [])
                 }
             }
 
+            vm.alert = function () {
+                alert("yes>");
+            }
+
             function loadPage () {
                 // load page by searching for id else imply pages are sorted in order...
                 vm.page = _.find(pages, function (page) { return page.index === currentPageIndex; }) || pages[currentPageIndex];
-                
 
+                //reset questin..
+                if (vm.page.index === 7) {
+                    vm.selectedQuestion = 0;
+                }
 
                 vm.page['hasNextPage'] =  (currentPageIndex >= 0) && (pages.length - 1  > currentPageIndex );
                 vm.page['hasPrevPage'] =  (currentPageIndex > 0) && (pages.length > currentPageIndex);
@@ -446,7 +574,8 @@ angular.module('app.pages', [])
                     if (vm.currentErrorMessage.length > 0){
                         return false;
                     }
-                } else if (vm.page['range_validate_by'] !== undefined && vm.page['range_validate_by'].length == 3) {
+                }
+                else if (vm.page['range_validate_by'] !== undefined && vm.page['range_validate_by'].length == 3) {
                     // do so
                     const rangeInfo = vm.page['range_validate_by']
                     let pendingIndices = '';
@@ -460,6 +589,39 @@ angular.module('app.pages', [])
                         return false;
                     }
                 }
+
+                if (vm.page['validate_has'] !== undefined && vm.page['validate_has'].length > 0) {
+                    for (criteria_index in  vm.page['validate_has']) {
+                        const criteria =  vm.page['validate_has'][criteria_index];
+                        const criteria_address =  criteria['prop'].split('.');
+                        let value = vm.response;
+                        for (path_index in criteria_address) {
+                            const path = criteria_address[path_index]
+                            value =  value[path];
+                        }
+                        if (value === '') {
+                            if (vm.currentErrorMessage === ''){
+                                vm.currentErrorMessage = 'Please fill in the following to proceed: \n';
+                            }
+                            vm.currentErrorMessage = vm.currentErrorMessage + '\n - ' + criteria['label'];
+                        } else {
+                            for (let x of criteria['values']) {
+                                if (value.toLowerCase().indexOf(x.toLowerCase()) === -1) {
+                                    if (vm.currentErrorMessage === ''){
+                                        vm.currentErrorMessage = 'Please fill in the following appropriately to proceed: \n';
+                                    }
+                                    vm.currentErrorMessage = vm.currentErrorMessage + '\n - ' + criteria['label'];
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                /*
+                     validate_has: [
+                        {'label': 'Consent & Declaration', 'prop': 'misc.view_on_transparency', 'values': ['consent', 'withdrawal', 'information']}
+                    ]
+                 */
                 return true;
             }
 
@@ -502,9 +664,9 @@ angular.module('app.pages', [])
                         appId: "1:75203192387:web:ae9913848a32864c9596f6"
                     });
     
-                    fa =  firebase.firestore().collection('feb_22');
-                    fb =  firebase.firestore().collection('f_22_b');
-                    fc =  firebase.firestore().collection('xy_qq_x');
+                    fa =  firebase.firestore().collection('s_2_plt');
+                    fb =  firebase.firestore().collection('s_2_duplicate');
+                    fc =  firebase.firestore().collection('oct_21');
                 }
 
                 function initVisualisation() {
@@ -585,7 +747,8 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Confirm Attendance",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: []
+                                        CONTEXT: [],
+                                        TIME: "07:00am"
                                     }
                                 ]
                             },
@@ -655,13 +818,15 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Reschedule event ",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable']
+                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable'],
+                                        TIME: "07:05am"
                                     },
                                     {
                                         IDENTIFIER: "Fix event time",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is available', 'Bob is available']
+                                        CONTEXT: ['Alice is available', 'Bob is available'],
+                                        TIME: "07:05am"
                                     }
                                 ]
                             },
@@ -799,7 +964,8 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Request Availability",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: []
+                                        CONTEXT: [],
+                                        TIME: "07:10am"
                                     }
                                 ]
                             },
@@ -869,7 +1035,8 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Propose Change",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: []
+                                        CONTEXT: [],
+                                        TIME: "07:12am"
                                     }
                                 ]
                             },
@@ -943,13 +1110,15 @@ angular.module('app.pages', [])
                                         IDENTIFIER: "Update calendar",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is available', 'Bob is available']
+                                        CONTEXT: ['Alice is available', 'Bob is available'],
+                                        TIME: "07:15am"
                                     },
                                     {
                                         IDENTIFIER: "Reschedule event",
                                         CODE_FILE: "",
                                         CODE_LINE: "",
-                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable']
+                                        CONTEXT: ['Alice is unavailable', 'Bob is unavilable'],
+                                        TIME: "07:15am"
                                     }
                                     ]
                             },
@@ -1145,11 +1314,17 @@ angular.module('app.pages', [])
                             function() {
                                 return "translate(" + (source.y0 || 0) + "," + (source.x0 || 0) + ")";
                             })
-                        .on("click", selectState);
+                        .on("click",selectState)
+
     
                     nodeEnter.append("svg:circle")
-                        .on("mouseover", mouseover)
-                        .on("mousemove", function(d){mousemove(d);})
+                        .on("mouseover", function(d){
+                            mouseover(d);
+                            if (vm.page.index === 8) {
+                                selectState(d);
+                            }
+                        })
+                        .on("mousemove", function(d){ mousemove(d); })
                         .on("mouseout", mouseout)
                         .attr("r", 1e-6)
                         .style(
@@ -1257,7 +1432,9 @@ angular.module('app.pages', [])
                     }
     
                 }
-    
+
+
+
                 function selectState (state) {
                     console.log(state);
                     vm.selectedState = state;
@@ -1271,7 +1448,6 @@ angular.module('app.pages', [])
                     vm.searchKnowledgeBase();
     
                 }
-    
                 function mousemove(d) {
                     //todo: regenerate if view preference changes at runtime
     
@@ -1302,7 +1478,13 @@ angular.module('app.pages', [])
                                             : DEFAULTS.colours.unTraversableNode
                                     );
                             });
+                            div.append("br")
+                            div.append("br")
+
+
+
                         }
+
                         // request view options information
                         trace.applyViewPreference(d);
                         // add additional selected information here....
@@ -1318,6 +1500,21 @@ angular.module('app.pages', [])
                             });
                         }
                         // store the generated summary to avoid reprocessing
+
+
+                        if (vm.page.index === 8) {
+                            console.log(d);
+                            div.append("br")
+                            div.append("br")
+                            div.append("b").text("Task performed at:")
+                            div.append("br")
+                            div.append("span").text(d.payload.contents.TIME)
+                            div.append("br")
+                            div.append("br")
+                            div.append("a")
+                                .attr("href", "#")
+                                .text("See sidebar for summary of information available at time of decision making")
+                        }
                         d["mousemove_html"] = div.html();
     
                     } else {
@@ -1329,17 +1526,24 @@ angular.module('app.pages', [])
                     }
     
                 }
-    
+
+
                 function mouseout() {
-                    div.transition()
-                        .duration(100)
-                        .style("opacity", 1e-6);
+
+                    //if (vm.page.index === 4) {
+                        div.transition()
+                            .duration(100)
+                            .style("opacity", 1e-6);
+                   // }
+
+
                 }
     
-                function mouseover() {
+                function mouseover(d) {
                     div.transition()
                         .duration(100)
                         .style("opacity", 1);
+
                 }
     
                 function getNodeColour (node) {
